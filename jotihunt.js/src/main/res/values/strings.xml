@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Jotihunt.app</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="voorwaarden_string">Dit is de Jotihunt.app. De app zorgt ervoor dat jouw locatie wordt doorgestuurd. Zorg ervoor dat je \'ingedeeld\' bent bij de auto waar je nu in zit. Wij kunnen je dan berichten over nieuwe aanwijzingen sturen. Als eerste moet je nu even inloggen. Dat doe je door een QR-code te scannen of door je gebruikersnaam en wachtwoord in te voeren.</string>
+    <string name="title_activity_activator">ActivatorActivity</string>
+    <string name="title_activity_credentials">CredentialsActivity</string>
+    <string name="login_text">Je kunt ook gewoon inloggen met je gebruikersnaam en wachtwoord.</string>
+
+</resources>
