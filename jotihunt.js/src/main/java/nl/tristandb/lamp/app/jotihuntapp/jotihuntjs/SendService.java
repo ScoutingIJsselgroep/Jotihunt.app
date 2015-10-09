@@ -1,30 +1,43 @@
 package nl.tristandb.lamp.app.jotihuntapp.jotihuntjs;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.os.PowerManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
  * Created by Tristan on 28-7-2015.
  */
-public class SendService extends BroadcastReceiver {
+public class SendService extends WakefulBroadcastReceiver {
+    private PowerManager.WakeLock wl;
+    private void aquireWakeLock(Context context){
+        PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK
+                        | PowerManager.ON_AFTER_RELEASE,
+                "wakeup");
+        wl.acquire();
+        return;
+    }
 
+    private void releaseWakeLock(){
+        wl.release();
+    }
     @Override
     public void onReceive(final Context context, Intent intent) {
-        HTTPClient client = HTTPClient.getInstance(context);
+        this.aquireWakeLock(context);
+        final HTTPClient client = HTTPClient.getInstance(context);
         LocationListener locationListener = new LocationListener(context);
 
         RequestParams params = new RequestParams();
         params.put("lat", locationListener.getLatitude());
         params.put("lng", locationListener.getLongitude());
-        client.getAsyncHttpClient().post("http://" + Configuration.HOST_ADDRESS + "/api/location", params, new JsonHttpResponseHandler() {
+        final RequestHandle post = client.getAsyncHttpClient().post("http://" + Configuration.HOST_ADDRESS + "/api/location", params, new JsonHttpResponseHandler() {
 
             @Override
             public void onStart() {
@@ -36,11 +49,22 @@ public class SendService extends BroadcastReceiver {
                 // called when response HTTP status is "200 OK"
             }
 
-            public void onFailure(int statusCode, Header[] headers, JSONArray errorResponse, Throwable e) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, java.lang.String errorResponse, java.lang.Throwable throwable) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                if (statusCode == 401) {
+                    // Not authenticated, go back to login again.
+                    client.clearCookieStore();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent);
+                    Toast.makeText(context, "Server herstart. Log opnieuw in!", Toast.LENGTH_LONG).show();
+
+                }/*
+                Log.d("Response", errorResponse.toString());
                 Toast.makeText(context, "Login niet correct. Log alsjeblieft opnieuw in!", Toast.LENGTH_LONG);
                 Intent myIntent = new Intent(context, MainActivity.class);
-                Log.d("Login", "Failed: error" + statusCode);
+                Log.d("Login", "Failed: error" + statusCode);*/
             }
 
             @Override
@@ -48,6 +72,7 @@ public class SendService extends BroadcastReceiver {
                 // called when request is retried
             }
         });
+        this.releaseWakeLock();
         System.gc();
     }
 }

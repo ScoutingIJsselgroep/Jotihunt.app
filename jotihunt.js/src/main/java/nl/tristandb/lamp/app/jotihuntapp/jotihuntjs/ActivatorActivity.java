@@ -17,7 +17,7 @@ import java.util.Calendar;
 
 
 public class ActivatorActivity extends ActionBarActivity {
-    private static final String LISTEN_LOCATION = "listenLocation";
+    public static final String LISTEN_LOCATION = "listenLocation";
     private AlarmManager alarmManager;
     private int FIRST_TIME = 3000;
     private static int REPEATING_TIME = 60 * 1000;
