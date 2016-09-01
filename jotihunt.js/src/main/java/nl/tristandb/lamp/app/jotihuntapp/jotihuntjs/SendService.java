@@ -59,12 +59,7 @@ public class SendService extends WakefulBroadcastReceiver {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                     Toast.makeText(context, "Server herstart. Log opnieuw in!", Toast.LENGTH_LONG).show();
-
-                }/*
-                Log.d("Response", errorResponse.toString());
-                Toast.makeText(context, "Login niet correct. Log alsjeblieft opnieuw in!", Toast.LENGTH_LONG);
-                Intent myIntent = new Intent(context, MainActivity.class);
-                Log.d("Login", "Failed: error" + statusCode);*/
+                }
             }
 
             @Override

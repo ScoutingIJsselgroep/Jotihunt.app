@@ -28,10 +28,10 @@
 
         <receiver android:name=".SendService" />
 
-        <activity
+        <activityna
             android:name=".CredentialsActivity"
             android:label="@string/title_activity_credentials" >
-        </activity>
+        </activityna>
     </application>
 
 </manifest>
